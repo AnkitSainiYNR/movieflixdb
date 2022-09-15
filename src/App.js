@@ -69,7 +69,39 @@ const Placeholder = styled.img`
 `;
 
 function App() {
- 
+  const [searchQuery, updateSearchQuery] = useState("");
+
+  const [movieList, updateMovieList] = useState([]);
+  const [selectedMovie, onMovieSelect] = useState();
+
+  const [timeoutId, updateTimeoutId] = useState();
+
+  const [homeData, setHomeData] = useState();
+
+  useEffect(() => {
+    Axios.get(`http://www.omdbapi.com/?apikey=${API_KEY}&s=spider%20man`)
+      .then((response) => {
+        setHomeData(response.data.Search);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const fetchData = async (searchString) => {
+    const response = await Axios.get(
+      `https://www.omdbapi.com/?s=${searchString}&apikey=${API_KEY}`
+    );
+    updateMovieList(response.data.Search);
+  };
+
+  const onTextChange = (e) => {
+    onMovieSelect("");
+    clearTimeout(timeoutId);
+    updateSearchQuery(e.target.value);
+    const timeout = setTimeout(() => fetchData(e.target.value), 500);
+    updateTimeoutId(timeout);
+  };
   return (
     <Container>
       <Header>
@@ -86,7 +118,33 @@ function App() {
           />
         </SearchBox>
       </Header>
-      
+      {selectedMovie && (
+        <MovieInfoComponent
+          selectedMovie={selectedMovie}
+          onMovieSelect={onMovieSelect}
+        />
+      )}
+      <MovieListContainer>
+        {movieList?.length ? (
+          movieList.map((movie, index) => (
+            <MovieComponent
+              key={index}
+              movie={movie}
+              onMovieSelect={onMovieSelect}
+            />
+          ))
+        ) : homeData ? (
+          homeData?.map((movie, index) => (
+            <MovieComponent
+              key={index}
+              movie={movie}
+              onMovieSelect={onMovieSelect}
+            />
+          ))
+        ) : (
+          <Placeholder src="/cinema.png" />
+        )}
+      </MovieListContainer>
     </Container>
   );
 }
