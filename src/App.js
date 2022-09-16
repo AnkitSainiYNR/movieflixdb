@@ -79,7 +79,7 @@ function App() {
   const [homeData, setHomeData] = useState();
 
   useEffect(() => {
-    Axios.get(`http://www.omdbapi.com/?apikey=${API_KEY}&s=spider%20man`)
+    Axios.get(`https://www.omdbapi.com/?s=marvel&apikey=${API_KEY}`)
       .then((response) => {
         setHomeData(response.data.Search);
       })
@@ -90,7 +90,7 @@ function App() {
 
   const fetchData = async (searchString) => {
     const response = await Axios.get(
-      `https://www.omdbapi.com/?s=marvel&apikey=${API_KEY}`
+      `https://www.omdbapi.com/?s=${searchString}&apikey=${API_KEY}`
     );
     updateMovieList(response.data.Search);
   };
