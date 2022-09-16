@@ -90,7 +90,7 @@ function App() {
 
   const fetchData = async (searchString) => {
     const response = await Axios.get(
-      `https://www.omdbapi.com/?s=${searchString}&apikey=${API_KEY}`
+      `https://www.omdbapi.com/?s=marvel&apikey=${API_KEY}`
     );
     updateMovieList(response.data.Search);
   };
